@@ -32,8 +32,8 @@ app.get('/customers', (req, res) => {
 });
 
 app.get('/customers/:id', (req, res) => {
-    const id = req.params.id;
-    const customer = customers.find(c => c.id === parseInt(id));
+    const id = parseInt(req.params.id);
+    const customer = customers.find(c => c.id === id);
 
     if (!customer) return res.status(404).send('customer not found!!');
 
@@ -58,8 +58,8 @@ app.post('/customers', (req, res) => {
 });
 
 app.put('/customers/:id', (req, res) => {
-    const id = req.params.id;
-    let customer = customers.find(c => c.id === parseInt(id));
+    const id = parseInt(req.params.id);
+    let customer = customers.find(c => c.id === id);
 
     if (!customer) return res.status(404).send('customer not found!!');
 
@@ -72,6 +72,15 @@ app.put('/customers/:id', (req, res) => {
 
     customer.name = req.body.name;
     res.status(200).send(JSON.stringify(customer));
+});
+
+app.delete('/customers/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = customers.findIndex(c => c.id === id);
+
+    if (index == -1) return res.status(404).send('customer not found!!');
+
+    res.send(JSON.stringify(customers.splice(index, 1)));
 });
 
 app.listen(8080);
