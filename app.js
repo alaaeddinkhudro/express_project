@@ -57,5 +57,21 @@ app.post('/customers', (req, res) => {
     res.status(201).send(customer);
 });
 
+app.put('/customers/:id', (req, res) => {
+    const id = req.params.id;
+    let customer = customers.find(c => c.id === parseInt(id));
+
+    if (!customer) return res.status(404).send('customer not found!!');
+
+    let {
+        error
+    } = customer_schema.validate(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
+
+    customer.name = req.body.name;
+    res.status(200).send(JSON.stringify(customer));
+});
 
 app.listen(8080);
