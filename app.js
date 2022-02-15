@@ -1,5 +1,6 @@
 const express = require('express');
 const body_parser = require('body-parser');
+const joi = require('joi');
 
 const app = express();
 app.use(body_parser.json()); // parse json in body
@@ -20,7 +21,11 @@ let customers = [{
         id: 3,
         name: 'muaaz'
     },
-]
+];
+
+const customer_schema = joi.object({
+    name: joi.string().alphanum().min(3).max(30).required(),
+});
 
 app.get('/customers', (req, res) => {
     res.send(JSON.stringify(customers));
@@ -36,6 +41,13 @@ app.get('/customers/:id', (req, res) => {
 });
 
 app.post('/customers', (req, res) => {
+
+    let {
+        error
+    } = customer_schema.validate(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
     const customer = {
         id: customers.length + 1,
         name: req.body.name
