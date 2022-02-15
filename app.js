@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-let customer = [{
+let customers = [{
         id: 1,
         name: 'alaa'
     },
@@ -16,6 +16,15 @@ let customer = [{
 ]
 
 app.get('/customers', (req, res) => {
+    res.send(JSON.stringify(customers));
+});
+
+app.get('/customers/:id', (req, res) => {
+    const id = req.params.id;
+    const customer = customers.find(c => c.id === parseInt(id));
+
+    if (!customer) return res.status(404).send('customer not found!!');
+
     res.send(JSON.stringify(customer));
 });
 
